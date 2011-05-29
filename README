@@ -1,0 +1,9 @@
+unifeed
+-------
+Copyright 2011 (c) Moros Stratos  <stmoros@gmail.com>, Kokkalis Nikos <nicolas@students.cs.unipi.gr>
+
+About
+-----
+
+Just a small script which web-scrapes www.unipi.gr and creates a Atom
+feed.
