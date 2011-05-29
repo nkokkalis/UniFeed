@@ -74,6 +74,8 @@ root.set('xmlns', 'http://www.w3.org/2005/Atom')
 
 global_title_node = et.SubElement(root, 'title')
 global_title_node.text = 'Unipi feed'
+icon_node = et.SubElement(root, 'icon')
+icon_node.text = 'http://www.unipi.gr/favicon.ico'
 global_id_node = et.SubElement(root, 'id')
 global_id_node.text = 'urn:students.cs.unipi.gr-feed'
 global_updated_node = et.SubElement(root, 'updated')
