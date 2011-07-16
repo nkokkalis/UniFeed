@@ -82,26 +82,30 @@ global_updated_node = et.SubElement(root, 'updated')
 global_updated_node.text = datetime.datetime.now().strftime('%Y-%m-%dT%H-%M-%SZ')
 
 for url in parser.articles:
-	html = urllib2.urlopen('http://www.unipi.gr/%s' % url).read()
-	html = html[html.find('smaplev2') + 5:]
-	title = re.findall('<p class="smaplev2">(.*?)</p>', html, re.S)[0].decode('cp1253')
-	title = strip(title)
-	datestr = re.findall('<p class="smaplev2">.*?</p>.*?<p>.*?<strong>(.*?)</strong>.*?</p>', html, re.S)[0].strip().decode('cp1253')
-	date = datetime.datetime.strptime(datestr, '%d/%m/%Y')
-	content = re.findall('<td class="norm"><p class="smaplev2">.*?</p>.*?<p>.*?</p>(.*?)</td>', html, re.S)[0].strip().decode('cp1253')
-	id = url.split('=')[-1]
+	try:
+		html = urllib2.urlopen('http://www.unipi.gr/%s' % url).read()
+	except urllib2.HTTPError, e:
+		pass
+	else:
+		html = html[html.find('smaplev2') + 5:]
+		title = re.findall('<p class="smaplev2">(.*?)</p>', html, re.S)[0].decode('cp1253')
+		title = strip(title)
+		datestr = re.findall('<p class="smaplev2">.*?</p>.*?<p>.*?<strong>(.*?)</strong>.*?</p>', html, re.S)[0].strip().decode('cp1253')
+		date = datetime.datetime.strptime(datestr, '%d/%m/%Y')
+		content = re.findall('<td class="norm"><p class="smaplev2">.*?</p>.*?<p>.*?</p>(.*?)</td>', html, re.S)[0].strip().decode('cp1253')
+		id = url.split('=')[-1]
 	
-	entry_node = et.SubElement(root, 'entry')
-	title_node = et.SubElement(entry_node, 'title', type="html")
-	title_node.text = title
-	link_node = et.SubElement(entry_node, 'link')
-	link_node.set('href', 'http://www.unipi.gr/%s' % url)
-	id_node = et.SubElement(entry_node, 'id')
-	id_node.text = 'urn:article-%s' % id
-	updated_node = et.SubElement(entry_node, 'updated')
-	updated_node.text = date.strftime('%Y-%m-%dT00-00-00Z')
-	summary_node = et.SubElement(entry_node, 'content', mode="escaped", type="text/html")
-	summary_node.text = content
+		entry_node = et.SubElement(root, 'entry')
+		title_node = et.SubElement(entry_node, 'title', type="html")
+		title_node.text = title
+		link_node = et.SubElement(entry_node, 'link')
+		link_node.set('href', 'http://www.unipi.gr/%s' % url)
+		id_node = et.SubElement(entry_node, 'id')
+		id_node.text = 'urn:article-%s' % id
+		updated_node = et.SubElement(entry_node, 'updated')
+		updated_node.text = date.strftime('%Y-%m-%dT00-00-00Z')
+		summary_node = et.SubElement(entry_node, 'content', mode="escaped", type="text/html")
+		summary_node.text = content
 	
 tree = et.ElementTree(root)
 tree.write('miou.atom', encoding="utf-8")
