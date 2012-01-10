@@ -92,9 +92,10 @@ for url in parser.articles:
 		title = strip(title)
 		datestr = re.findall('<p class="smaplev2">.*?</p>.*?<p>.*?<strong>(.*?)</strong>.*?</p>', html, re.S)[0].strip().decode('cp1253')
 		date = datetime.datetime.strptime(datestr, '%d/%m/%Y')
-		content = re.findall('<td class="norm"><p class="smaplev2">.*?</p>.*?<p>.*?</p>(.*?)</td>', html, re.S)[0].strip().decode('cp1253')
+		content_a = re.findall('<td class="norm"><p class="smaplev2">.*?</p>.*?<p>.*?</p>(.*?)</td>', html, re.S)[0].strip().decode('cp1253')
+		content = re.sub(r"(?<=href=['\"])((?!http).*?)(?=['\"])", 'http://www.unipi.gr/'+r'\1', content_a)
 		id = url.split('=')[-1]
-	
+
 		entry_node = et.SubElement(root, 'entry')
 		title_node = et.SubElement(entry_node, 'title', type="html")
 		title_node.text = title
